@@ -47,20 +47,23 @@ function addTask(nombreTarea, fechaTarea, completoTarea) {
   fetch('https://js2-tareas-api.netlify.app/api/tareas?uid=28', fetchoptions)
     .then((response) => response.json())
     .then((data)=> {
-      appendTaskDOM(data);
     });
 }
 // taskStatus(): Actualiza el estado de una tarea.
 function taskStatus(id, complete) {
-
+  let task = '';
+  for(let i = 0; i < tareas.length; i++){
+    if(tareas[i]._id === id){
+    tareas[i].complete = complete;
+    task = tareas[i];
+    break
+    }
+  }
   const fetchoptions = {
     method:'PUT', //Nombre de los metodos en mayuscula siempre/
-    body:JSON.stringify(nuevaTarea),
+    body:JSON.stringify(task),
   };
-
-  const test = `https://js2-tareas-api.netlify.app/api/tareas/${id}?uid=28`;
-
-  fetch(test, fetchoptions)
+  fetch(`https://js2-tareas-api.netlify.app/api/tareas/${id}?uid=28`, fetchoptions)
     .then((response) => response.json())
     .then((data)=> {
       appendTaskDOM(data);
@@ -69,16 +72,21 @@ function taskStatus(id, complete) {
 
 // deleteTask(): Borra una tarea.
 function deleteTask(id) {
-  const fetchoptions = {
-    method:'DELETE', //Nombre de los metodos en mayusucla siempre/
-    body:JSON.stringify(nuevaTarea),
+  for(let i = 0; i < tareas.length; i++){
+    if(tareas[i]._id === id){
+      tareas.splice(i,1)
+      break;
+    }
   };
-  fetch('https://js2-tareas-api.netlify.app/api/tareas?uid=28', fetchoptions)
+}
+const fetchoptions = {
+    method:'DELETE', //Nombre de los metodos en mayuscula siempre/
+  };
+fetch(`https://js2-tareas-api.netlify.app/api/tareas/${id}?uid=28`, fetchoptions)
     .then((response) => response.json())
     .then((data)=> {
-      appendTaskDOM(data);
+      console.log(data);
     });
-}
 
 //
 // V I S T A
@@ -120,7 +128,7 @@ function appendTaskDOM(tarea) {
   });
   // Evento para borrar tareas.
   buttonDelete.addEventListener('click', (event) => {
-    const taskId = event.currentTarget.datased.taskId;
+    const taskId = event.currentTarget.dataset.taskId;
     deleteTask(taskId);
     // Borra la tarea en el DOM.
     event.currentTarget.parentNode.remove();
