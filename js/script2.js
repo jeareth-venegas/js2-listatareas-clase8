@@ -18,16 +18,6 @@ fetch('https://js2-tareas-api.netlify.app/api/tareas?uid=28')
     }
   });
 
-// Se lee el contador de tareas del localStorage.
-const contadorLocalStorage = localStorage.getItem('contador');
-console.log(contadorLocalStorage);
-
-console.log(tareas);
-
-if (contadorLocalStorage) {
-  contadorTareas = parseInt(contadorLocalStorage,10);
-}
-
 // addTask(): Agrega una tarea en la lista.
 function addTask(nombreTarea, fechaTarea, completoTarea) {
   // Crea un objeto que representa la nueva tarea.
@@ -40,13 +30,15 @@ function addTask(nombreTarea, fechaTarea, completoTarea) {
   // Agrega el objeto en el array.
   tareas.push(nuevaTarea);
 
+
   const fetchoptions = {
-    method:'POST', //Nombre de los metodos en mayusucla siempre/
+    method:'POST',
     body:JSON.stringify(nuevaTarea),
   };
   fetch('https://js2-tareas-api.netlify.app/api/tareas?uid=28', fetchoptions)
     .then((response) => response.json())
     .then((data)=> {
+      appendTaskDOM(data);
     });
 }
 // taskStatus(): Actualiza el estado de una tarea.
@@ -59,8 +51,10 @@ function taskStatus(id, complete) {
     break
     }
   }
+
+
   const fetchoptions = {
-    method:'PUT', //Nombre de los metodos en mayuscula siempre/
+    method:'PUT', //Put, Post y delete siempre en mayuscula//
     body:JSON.stringify(task),
   };
   fetch(`https://js2-tareas-api.netlify.app/api/tareas/${id}?uid=28`, fetchoptions)
@@ -74,13 +68,13 @@ function taskStatus(id, complete) {
 function deleteTask(id) {
   for(let i = 0; i < tareas.length; i++){
     if(tareas[i]._id === id){
-      tareas.splice(i,1)
+      tareas.splice(i,1) ///////////////porqué splice i,1
       break;
     }
   };
 }
 const fetchoptions = {
-    method:'DELETE', //Nombre de los metodos en mayuscula siempre/
+    method:'DELETE', /////////////saber porqué no se coloca el JSON en esta funcion DELETE
   };
 fetch(`https://js2-tareas-api.netlify.app/api/tareas/${id}?uid=28`, fetchoptions)
     .then((response) => response.json())
